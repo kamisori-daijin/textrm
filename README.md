@@ -10,6 +10,11 @@ Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungS
    uv sync
    source .venv/bin/activate
    ```
+2. Install requirements library
+   ```bash
+   pip install -r requirements.txt 
+   ```
+
 2. Adjust model config in `train.py`
 
    ```python
@@ -28,14 +33,11 @@ Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungS
        halt_exploration_prob: float = 0.2  # exploratory q probability
        halt_follow_q: bool = True  # follow q (True) or max steps (False)
    ```
-3. Train on MNIST or CIFAR-10 (see `python train.py --help`):
+3. Train on TinyStories:
    ```bash
-   python train.py --dataset mnist
-   python train.py --dataset cifar10
+   python train.py 
+  
    ```
 
-## Notes
 
-- Hyperparams are currently hardcoded for faster experimentation.
-- Only MNIST and CIFAR-10 are supported at the moment.
-- `uv` handles virtual environment creation automatically.
+

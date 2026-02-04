@@ -10,9 +10,9 @@ from tqdm import tqdm
 import copy
 from models import trm_build
 
-from trm_build import RMSNorm, TransformerBlock, apply_rotary_pos_emb, RotaryEmbedding
-from trm_model import TinyRecursiveModel
-from config import config
+from models.trm_build import RMSNorm, TransformerBlock, apply_rotary_pos_emb, RotaryEmbedding
+from models.trm_model import TinyRecursiveModel
+from models.config import config
 
 
 

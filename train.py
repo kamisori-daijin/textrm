@@ -1,8 +1,8 @@
 from torch.utils.data import Dataset, DataLoader
 import torch
 from datasets import load_dataset
-from trm_build import RMSNorm, TransformerBlock, apply_rotary_pos_emb, RotaryEmbedding
-from trm_model import TinyRecursiveModel
+from models.trm_build import RMSNorm, TransformerBlock, apply_rotary_pos_emb, RotaryEmbedding
+from models.trm_model import TinyRecursiveModel
 from models.config import config
 from dataset.tinystories import TinyStoriesDataset 
 from training.instantiate import tokenizer, device, model
