@@ -40,6 +40,7 @@ if __name__ == '__main__':
     )
 
     #Training
+    save_path = 'best_model.pt' # Path to save the best model
     model = train(
         model=model,
         train_loader=train_loader,
@@ -50,9 +51,12 @@ if __name__ == '__main__':
         lr=config['lr'],
         warmup_steps=config['warmup_steps'],
         n_supervision_steps=config['n_supervision_steps'],
+        save_path=save_path,
     )
-
+    
     print('\nTraining complete!')
+    torch.save(model.state_dict(), 'final_model.pt') # Save final model
+    print('Saved final model to final_model.pt')
 
 
     # test Generation

@@ -1,4 +1,4 @@
-# MLX Tiny Recursive Models
+# MLX Tiny Recursive Models (Currently using a torch)
 
 Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungSAILMontreal/TinyRecursiveModels) using [MLX](https://github.com/ml-explore/mlx).
 
@@ -7,7 +7,7 @@ Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungS
 1. Setup the environment
 
    ```bash
-   uv sync
+   python -m venv .venv
    source .venv/bin/activate
    ```
 2. Install requirements library
@@ -15,29 +15,38 @@ Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungS
    pip install -r requirements.txt 
    ```
 
-2. Adjust model config in `train.py`
+2. Adjust model config in `models/config.py`
 
    ```python
-   @dataclass
-   class ModelConfig:
-       in_channels: int
-       depth: int
-       dim: int
-       heads: int
-       patch_size: tuple
-       n_outputs: int
-       pool: str = "cls" # mean or cls
-       n: int = 6  # latent steps
-       T: int = 3  # deep steps
-       halt_max_steps: int = 8  # maximum supervision steps
-       halt_exploration_prob: float = 0.2  # exploratory q probability
-       halt_follow_q: bool = True  # follow q (True) or max steps (False)
+      config = {
+         'vocab_size': 50257,  # GPT-2 vocab
+         'dim': 256,           # Hidden dimension
+         'n_heads': 8,         # Attention heads
+         'n_layers': 2,        # Only 2 layers (key insight from paper)
+         'mlp_ratio': 4,
+         'max_seq_len': 128,   # Reduced for stability
+         'n_latent_recursions': 4,  # n in paper (reduced for memory)
+         'n_improvement_cycles': 2,  # T in paper (reduced for memory)
+
+         # Training
+         'batch_size': 256,     # 16 Reduced batch size
+         'epochs': 3,
+         'lr': 1e-4,
+         'warmup_steps': 500,
+         'n_supervision_steps': 3,  # Deep supervision steps during training
+         'max_train_samples': 2000000,  # Limit for faster training demo
+         'max_val_samples': 20000,
+      }
    ```
 3. Train on TinyStories:
    ```bash
    python train.py 
   
    ```
+
+## Thanks
+
+[gmarchetti2020/TRM-Experiments](https://github.com/gmarchetti2020/TRM-Experiments)-Defining and training the model
 
 
 
