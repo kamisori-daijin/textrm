@@ -9,6 +9,9 @@ dependencies = [
     "mlx>=0.29.2",
     "mlx-data>=0.2.0",
     "tqdm>=4.67.1",
+    "torch",
+    "torchvision",
+    "torchaudio",
 ]
 
 [dependency-groups]

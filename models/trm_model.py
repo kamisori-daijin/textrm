@@ -9,6 +9,7 @@ import os
 from tqdm import tqdm
 import copy
 from models import trm_build
+from trm_build import RMSNorm, TransformerBlock, apply_rotary_pos_emb, RotaryEmbedding
 
 
 class TinyRecursiveNetwork(nn.Module):
