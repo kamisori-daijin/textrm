@@ -48,5 +48,6 @@ Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungS
 
 [gmarchetti2020/TRM-Experiments](https://github.com/gmarchetti2020/TRM-Experiments)-Defining and training the model
 
+[roneneldan/TinyStories](https://huggingface.co/datasets/roneneldan/TinyStories)-Dataset for training
 
 
