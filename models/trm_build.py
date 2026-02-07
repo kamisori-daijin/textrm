@@ -14,15 +14,28 @@ import copy
 # ============================================================================
 
 class RMSNorm(nn.Module):
-    """Root Mean Square Layer Normalization"""
-    def __init__(self, dim, eps=1e-6):
+    """
+    RMSNorm (CoreML export only)
+    """
+    def __init__(self, dim: int, eps: float = 1e-6):
         super().__init__()
         self.eps = eps
         self.weight = nn.Parameter(torch.ones(dim))
 
-    def forward(self, x):
-        rms = torch.sqrt(torch.mean(x ** 2, dim=-1, keepdim=True) + self.eps)
-        return x / rms * self.weight
+    def forward(self, x: torch.Tensor):
+        # x: (..., D)
+        doubled = torch.cat([x, -x], dim=-1)
+
+        normed = F.layer_norm(
+            doubled,
+            normalized_shape=(doubled.shape[-1],),
+            weight=None,
+            bias=None,
+            eps=self.eps,
+        )
+
+        normed = normed[..., : x.shape[-1]]
+        return normed * self.weight
 
 
 class RotaryEmbedding(nn.Module):
