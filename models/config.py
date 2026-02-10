@@ -9,7 +9,7 @@ config = {
     'n_improvement_cycles': 2,  # T in paper (reduced for memory)
 
     # Training
-    'batch_size': 256,     # 16 Reduced batch size
+    'batch_size': 64,     # Reduced for MPS memory constraints
     'epochs': 3,
     'lr': 1e-4,
     'warmup_steps': 500,
