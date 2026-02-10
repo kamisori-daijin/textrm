@@ -1,5 +1,5 @@
 [project]
-name = "mlx-trm"
+name = "trm-text-coreml"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
