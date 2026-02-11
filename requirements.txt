@@ -4,3 +4,4 @@ torch>2.1.0,
 transformers>=4.37.2,
 datasets>=2.19.0,
 numpy<2
+coremltools>8.3.0,
