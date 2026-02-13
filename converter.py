@@ -19,9 +19,12 @@ args = parser.parse_args()
 model = TinyRecursiveModel(
     vocab_size=50257,
     dim=256,
+    n_heads=4,
     n_layers=2,
-    n_heads=8,
+    mlp_ratio=4,
     max_seq_len=128,
+    n_latent_recursions=4,
+    n_improvement_cycles=2,
 )
 
 print(f"Loading weights from: {args.model_path}")
