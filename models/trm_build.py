@@ -59,9 +59,11 @@ def rotate_half(x):
 
 
 def apply_rotary_pos_emb(q, k, cos, sin):
-    # q/k: [B, C, 1, T]
-    cos = cos.unsqueeze(0).unsqueeze(2)
-    sin = sin.unsqueeze(0).unsqueeze(2)
+    # q/k: [B, H, Hd, 1, T]
+    # cos, sin: [T, Hd]
+    # Need to reshape cos/sin to [1, 1, Hd, 1, T] for broadcasting
+    cos = cos.transpose(0, 1).unsqueeze(0).unsqueeze(0).unsqueeze(3)  # [1, 1, Hd, 1, T]
+    sin = sin.transpose(0, 1).unsqueeze(0).unsqueeze(0).unsqueeze(3)  # [1, 1, Hd, 1, T]
     q = (q * cos) + (rotate_half(q) * sin)
     k = (k * cos) + (rotate_half(k) * sin)
     return q, k
@@ -103,7 +105,8 @@ class CausalSelfAttention(nn.Module):
 
         self.rope = RotaryEmbedding(self.head_dim, max_seq_len)
 
-        mask = torch.triu(torch.ones(max_seq_len, max_seq_len), diagonal=1)
+        # Causal mask
+        mask = torch.triu(torch.ones(max_seq_len, max_seq_len), diagonal=1).bool()
         self.register_buffer("mask", mask)
 
     def forward(self, x):

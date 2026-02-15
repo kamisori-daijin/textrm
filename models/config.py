@@ -1,7 +1,7 @@
 config = {
     'vocab_size': 50257,  # GPT-2 vocab
     'dim': 256,           # Hidden dimension
-    'n_heads': 4,         # Attention heads
+    'n_heads': 8,         # Attention heads
     'n_layers': 2,        # Only 2 layers (key insight from paper)
     'mlp_ratio': 4,
     'max_seq_len': 128,   # Reduced for stability
