@@ -12,13 +12,13 @@ from ema.ema import EMA
 
 
 if __name__ == '__main__':
-    train_dataset = WikipediaDatasetDataset(
+    train_dataset = WikipediaDataset(
         tokenizer,
         split='train',
         max_length=config['max_seq_len'] + 1,  # +1 for next token prediction
         max_samples=config['max_train_samples']
     )
-    val_dataset = WikipediaDatasetDataset(
+    val_dataset = WikipediaDataset(
         tokenizer,
         split='validation',
         max_length=config['max_seq_len'] + 1,
@@ -55,7 +55,10 @@ if __name__ == '__main__':
     )
     
     print('\nTraining complete!')
-    torch.save(model.state_dict(), 'final_model.pt') # Save final model
+    torch.save({
+        "epoch": config['epochs'],
+        "model_state_dict": model.state_dict(),
+    }, 'final_model.pt')
     print('Saved final model to final_model.pt')
 
 
