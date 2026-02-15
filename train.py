@@ -20,9 +20,11 @@ if __name__ == '__main__':
     )
     val_dataset = WikipediaDataset(
         tokenizer,
-        split='validation',
+        split='train',
         max_length=config['max_seq_len'] + 1,
-        max_samples=config['max_val_samples']
+        max_samples=config['max_val_samples'],
+        val_split=True,
+        val_split_ratio=0.9
     )
 
     train_loader = DataLoader(

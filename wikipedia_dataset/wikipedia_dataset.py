@@ -17,12 +17,14 @@ class WikipediaDataset(Dataset):
         tokenizer,
         max_length=128,
         max_samples=100000,
-        split="train"
+        split="train",
+        val_split=False,
+        val_split_ratio=0.9
     ):
         print("Loading Wikipedia...")
         dataset = load_dataset(
-            "wikipedia",
-            "20220301.en",
+            "wikimedia/wikipedia",
+            "20231101.en",
             split=split,
             streaming=True
         )
@@ -41,6 +43,10 @@ class WikipediaDataset(Dataset):
                 continue
 
             tokens = tokenizer.encode(text)
+            
+            # Skip texts that are too long
+            if len(tokens) > max_length * 2:
+                continue
 
             buffer.extend(tokens)
 
@@ -52,6 +58,11 @@ class WikipediaDataset(Dataset):
 
             if len(self.examples) >= max_samples:
                 break
+
+        # Split into train/validation if requested
+        if val_split:
+            split_idx = int(len(self.examples) * val_split_ratio)
+            self.examples = self.examples[split_idx:]
 
         print(f"Built {len(self.examples)} samples.")
 
