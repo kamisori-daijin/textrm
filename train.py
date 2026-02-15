@@ -4,7 +4,7 @@ from datasets import load_dataset
 from models.trm_build import RMSNorm, TransformerBlock, apply_rotary_pos_emb, RotaryEmbedding
 from models.trm_model import TinyRecursiveModel
 from models.config import config
-from dataset.wikipedia import WikipediaDataset 
+from dataset.wikipedia_dataset import WikipediaDataset 
 from training.instantiate import tokenizer, device, model
 from training.trainer import train
 from ema.ema import EMA
