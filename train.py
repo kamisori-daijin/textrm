@@ -4,7 +4,7 @@ from datasets import load_dataset
 from models.trm_build import RMSNorm, TransformerBlock, apply_rotary_pos_emb, RotaryEmbedding
 from models.trm_model import TinyRecursiveModel
 from models.config import config
-from dataset.tinystories import TinyStoriesDataset 
+from dataset.wikipedia import WikipediaDataset 
 from training.instantiate import tokenizer, device, model
 from training.trainer import train
 from ema.ema import EMA
@@ -12,13 +12,13 @@ from ema.ema import EMA
 
 
 if __name__ == '__main__':
-    train_dataset = TinyStoriesDataset(
+    train_dataset = WikipediaDatasetDataset(
         tokenizer,
         split='train',
         max_length=config['max_seq_len'] + 1,  # +1 for next token prediction
         max_samples=config['max_train_samples']
     )
-    val_dataset = TinyStoriesDataset(
+    val_dataset = WikipediaDatasetDataset(
         tokenizer,
         split='validation',
         max_length=config['max_seq_len'] + 1,
