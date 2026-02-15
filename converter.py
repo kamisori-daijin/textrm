@@ -62,7 +62,7 @@ mlmodel = ct.convert(
     ],
     # Optimization settings for Apple Neural Engine (ANE)
     compute_precision=ct.precision.FLOAT16,
-    compute_units=ct.ComputeUnit.ALL,
+    compute_units=ct.ComputeUnit.CPU_AND_NE,
     minimum_deployment_target=ct.target.iOS18,
     convert_to="mlprogram",
 )
