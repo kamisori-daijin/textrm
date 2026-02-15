@@ -11,46 +11,57 @@ import copy
 from models import trm_build
 from models.trm_build import RMSNorm, TransformerBlock, apply_rotary_pos_emb, RotaryEmbedding
 
-class TinyStoriesDataset(Dataset):
-    """Dataset for TinyStories"""
-    def __init__(self, tokenizer, split='train', max_length=256, max_samples=None):
-        print(f"Loading TinyStories {split} split...")
-        dataset = load_dataset('roneneldan/TinyStories', split=split)
-
-        if max_samples:
-            dataset = dataset.select(range(min(max_samples, len(dataset))))
+class WikipediaDataset(Dataset):
+    def __init__(
+        self,
+        tokenizer,
+        max_length=128,
+        max_samples=100000,
+        split="train"
+    ):
+        print("Loading Wikipedia...")
+        dataset = load_dataset(
+            "wikipedia",
+            "20220301.en",
+            split=split,
+            streaming=True
+        )
 
         self.tokenizer = tokenizer
         self.max_length = max_length
-        self.texts = dataset['text']
-        self.vocab_size = tokenizer.vocab_size
-        self.pad_token_id = tokenizer.pad_token_id if tokenizer.pad_token_id is not None else tokenizer.eos_token_id
-        print(f"Loaded {len(self.texts)} samples")
+        self.examples = []
+
+        buffer = []
+
+        for i, item in enumerate(dataset):
+            text = item["text"]
+
+        
+            if len(text) < 200:
+                continue
+
+            tokens = tokenizer.encode(text)
+
+            buffer.extend(tokens)
+
+        
+            while len(buffer) >= max_length:
+                chunk = buffer[:max_length]
+                buffer = buffer[max_length:]
+                self.examples.append(torch.tensor(chunk))
+
+            if len(self.examples) >= max_samples:
+                break
+
+        print(f"Built {len(self.examples)} samples.")
 
     def __len__(self):
-        return len(self.texts)
+        return len(self.examples)
 
     def __getitem__(self, idx):
-        text = self.texts[idx]
-        # Add BOS/EOS handling
-        tokens = self.tokenizer.encode(text, truncation=True, max_length=self.max_length)
+        tokens = self.examples[idx]
 
-        # Ensure all tokens are within valid range
-        tokens = [min(max(t, 0), self.vocab_size - 1) for t in tokens]
-
-        # Pad if necessary
-        if len(tokens) < self.max_length:
-            tokens = tokens + [self.pad_token_id] * (self.max_length - len(tokens))
-        else:
-            tokens = tokens[:self.max_length]
-
-        tokens = torch.tensor(tokens, dtype=torch.long)
-
-        # Input is tokens[:-1], target is tokens[1:]
         input_ids = tokens[:-1].clone()
         targets = tokens[1:].clone()
 
-        # Mask padding in targets (set to -100 to ignore in loss)
-        targets[targets == self.pad_token_id] = -100
-
-        return input_ids, targets
+        return input_ids, targets  
