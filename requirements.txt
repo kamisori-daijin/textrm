@@ -1,6 +1,6 @@
 matplotlib>=3.8,
 tqdm>=4.67.1,
-torch>2.7.0,
+torch>=2.7.1,
 transformers>=4.37.2,
 datasets>=2.19.0,
 numpy<2
