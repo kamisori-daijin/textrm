@@ -38,7 +38,7 @@ Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungS
       'max_val_samples': 20000,
    }
    ```
-3. Train on TinyStories:
+3. Train on Wikipedia Datasets:
    ```bash
    python train.py 
   
@@ -48,6 +48,6 @@ Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungS
 
 [gmarchetti2020/TRM-Experiments](https://github.com/gmarchetti2020/TRM-Experiments)-Defining and training the model
 
-[roneneldan/TinyStories](https://huggingface.co/datasets/roneneldan/TinyStories)-Dataset for training
+[wikimedia/wikipedia](https://huggingface.co/datasets/wikimedia/wikipedia)-Dataset for training
 
 
