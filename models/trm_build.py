@@ -85,58 +85,45 @@ class SwiGLU(nn.Module):
 
 
 # ============================================================================
-# Causal Self Attention (ANE Conv2d)
+# Causal Self Attention (linear)
 # ============================================================================
 
 class CausalSelfAttention(nn.Module):
+    """Multi-head causal self-attention with RoPE"""
     def __init__(self, dim, n_heads, max_seq_len=512):
         super().__init__()
         assert dim % n_heads == 0
-
-        self.dim = dim
         self.n_heads = n_heads
         self.head_dim = dim // n_heads
-        self.scale = 1.0 / math.sqrt(self.head_dim)
 
-        self.q_proj = nn.Conv2d(dim, dim, 1, bias=False)
-        self.k_proj = nn.Conv2d(dim, dim, 1, bias=False)
-        self.v_proj = nn.Conv2d(dim, dim, 1, bias=False)
-        self.o_proj = nn.Conv2d(dim, dim, 1, bias=False)
-
+        self.qkv = nn.Linear(dim, 3 * dim, bias=False)
+        self.proj = nn.Linear(dim, dim, bias=False)
         self.rope = RotaryEmbedding(self.head_dim, max_seq_len)
 
         # Causal mask
         mask = torch.triu(torch.ones(max_seq_len, max_seq_len), diagonal=1).bool()
-        self.register_buffer("mask", mask)
+        self.register_buffer('mask', mask)
 
     def forward(self, x):
-        # x: [B, T, D] → [B, D, 1, T]
-        B, T, D = x.shape
-        x = x.permute(0, 2, 1).unsqueeze(2)
+        B, T, C = x.shape
 
-        q = self.q_proj(x)
-        k = self.k_proj(x)
-        v = self.v_proj(x)
+        qkv = self.qkv(x)
+        q, k, v = qkv.split(C, dim=-1)
 
-        # [B, H, Hd, 1, T]
-        q = q.view(B, self.n_heads, self.head_dim, 1, T)
-        k = k.view(B, self.n_heads, self.head_dim, 1, T)
-        v = v.view(B, self.n_heads, self.head_dim, 1, T)
+        q = q.view(B, T, self.n_heads, self.head_dim).transpose(1, 2)
+        k = k.view(B, T, self.n_heads, self.head_dim).transpose(1, 2)
+        v = v.view(B, T, self.n_heads, self.head_dim).transpose(1, 2)
 
-        cos, sin = self.rope(q)
+        cos, sin = self.rope(x)
         q, k = apply_rotary_pos_emb(q, k, cos, sin)
 
-        att = torch.matmul(q.transpose(-1, -2), k) * self.scale
-        att = att.masked_fill(self.mask[:T, :T], float("-inf"))
+        att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(self.head_dim))
+        att = att.masked_fill(self.mask[:T, :T], float('-inf'))
         att = F.softmax(att, dim=-1)
 
-        out = torch.matmul(att, v.transpose(-1, -2))
-        out = out.reshape(B, D, 1, T)
-
-        out = self.o_proj(out)
-
-        # back to [B, T, D]
-        return out.squeeze(2).permute(0, 2, 1)
+        y = att @ v
+        y = y.transpose(1, 2).contiguous().view(B, T, C)
+        return self.proj(y)
 
 
 # ============================================================================
