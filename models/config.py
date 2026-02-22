@@ -9,11 +9,11 @@ config = {
     'n_improvement_cycles': 2,  # T in paper (reduced for memory)
 
     # Training
-    'batch_size': 64,     # 16 Reduced batch size
-    'epochs': 3,
+    'batch_size': 64,     # Reduced for MPS memory constraints
+    'epochs': 20,
     'lr': 1e-4,
     'warmup_steps': 500,
     'n_supervision_steps': 3,  # Deep supervision steps during training
-    'max_train_samples': 2000000,  # Limit for faster training demo
+    'max_train_samples': 100000,  # Reduced for memory and speed
     'max_val_samples': 20000,
 }

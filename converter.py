@@ -34,7 +34,9 @@ model = TinyRecursiveModel(
 
 print(f"[2/4] Loading and converting weights from: {args.model_path}")
 state_dict = torch.load(args.model_path, map_location="cpu")
-model.load_state_dict(state_dict)
+#if 'model_state_dict' in state_dict:
+    #state_dict = state_dict['model_state_dict']
+#model.load_state_dict(state_dict)
 
 model.eval()
 

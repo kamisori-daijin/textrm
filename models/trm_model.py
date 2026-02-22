@@ -93,7 +93,7 @@ class TinyRecursiveModel(nn.Module):
         # Clamp input_ids to valid range
         input_ids = input_ids.clamp(0, self.vocab_size - 1)
         # Clamp position to max_seq_len
-        T = min(T, self.max_seq_len)
+        T = min(int(T), self.max_seq_len)
         pos = torch.arange(T, device=input_ids.device).unsqueeze(0)
         return self.token_emb(input_ids[:, :T]) + self.pos_emb(pos)
 
@@ -150,7 +150,7 @@ class TinyRecursiveModel(nn.Module):
             If inference: logits
         """
         B, T = input_ids.shape
-        T = min(T, self.max_seq_len)
+        T = min(int(T), self.max_seq_len)
         input_ids = input_ids[:, :T]
 
         x = self.get_embeddings(input_ids)
@@ -220,4 +220,3 @@ class TinyRecursiveModel(nn.Module):
             input_ids = torch.cat([input_ids, next_token], dim=1)
 
         return input_ids
-

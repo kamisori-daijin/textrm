@@ -49,21 +49,20 @@ class RotaryEmbedding(nn.Module):
         self.register_buffer("sin_cached", emb.sin())
 
     def forward(self, x):
-        seq_len = x.shape[-1]
+        seq_len = x.shape[1]
         return self.cos_cached[:seq_len], self.sin_cached[:seq_len]
 
 
 def rotate_half(x):
-    x1, x2 = x.chunk(2, dim=1)
-    return torch.cat([-x2, x1], dim=1)
+    x1, x2 = x.chunk(2, dim=-1)
+    return torch.cat([-x2, x1], dim=-1)
 
 
 def apply_rotary_pos_emb(q, k, cos, sin):
-    # q/k: [B, H, Hd, 1, T]
+    # q, k: [B, H, T, Hd]
     # cos, sin: [T, Hd]
-    # Need to reshape cos/sin to [1, 1, Hd, 1, T] for broadcasting
-    cos = cos.transpose(0, 1).unsqueeze(0).unsqueeze(0).unsqueeze(3)  # [1, 1, Hd, 1, T]
-    sin = sin.transpose(0, 1).unsqueeze(0).unsqueeze(0).unsqueeze(3)  # [1, 1, Hd, 1, T]
+    cos = cos.unsqueeze(0).unsqueeze(0)  # [1, 1, T, Hd]
+    sin = sin.unsqueeze(0).unsqueeze(0)  # [1, 1, T, Hd]
     q = (q * cos) + (rotate_half(q) * sin)
     k = (k * cos) + (rotate_half(k) * sin)
     return q, k
