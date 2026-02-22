@@ -50,4 +50,6 @@ Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungS
 
 [wikimedia/wikipedia](https://huggingface.co/datasets/wikimedia/wikipedia)-Dataset for training
 
+[stockeh/mlx-trm](https://github.com/stockeh/mlx-trm)-Tool structure
+
 
