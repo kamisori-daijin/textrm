@@ -10,7 +10,7 @@ config = {
 
     # Training
     'batch_size': 64,     # Reduced for MPS memory constraints
-    'epochs': 20,
+    'epochs': 5,
     'lr': 1e-4,
     'warmup_steps': 500,
     'n_supervision_steps': 3,  # Deep supervision steps during training

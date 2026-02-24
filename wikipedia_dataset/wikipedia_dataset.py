@@ -21,10 +21,9 @@ class WikipediaDataset(Dataset):
         val_split=False,
         val_split_ratio=0.9
     ):
-        print("Loading Wikipedia...")
+        print("Loading enron-email dataset...")
         dataset = load_dataset(
-            "wikimedia/wikipedia",
-            "20231101.en",
+            "LLM-PBE/enron-email",
             split=split,
             streaming=True
         )
