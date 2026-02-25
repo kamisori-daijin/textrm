@@ -44,10 +44,15 @@ model.eval()
 # 3. Create Dummy Input and Trace
 # ==========================================
 print("[3/4] Tracing model with JIT...")
-example_input = torch.randint(0, 50257, (1, 128), dtype=torch.int32)
+example_input = torch.randint(0, 50257, (1, 128), dtype=torch.long)
 
 with torch.no_grad():
     traced_model = torch.jit.trace(model, (example_input,))
+
+out1=model(example_input)
+out2=traced_model(example_input)
+
+print((out1-out2).abs().max())
 
 # ==========================================
 # 4. CoreML Conversion
@@ -59,7 +64,7 @@ mlmodel = ct.convert(
         ct.TensorType(
             name="input_ids",
             shape=example_input.shape,
-            dtype=np.int32,
+            dtype=np.int64,
         )
     ],
     outputs=[
@@ -75,7 +80,7 @@ mlmodel = ct.convert(
 # 5. Add Metadata and Save
 # ==========================================
 mlmodel.short_description = "Tiny Recursive Model optimized for CoreML"
-mlmodel.save('wikipedia-TRM.mlpackage')
+mlmodel.save('enron-email-TRM.mlpackage')
 
 print(f"\n✓ Conversion complete! ")
 

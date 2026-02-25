@@ -170,7 +170,7 @@ class TinyRecursiveModel(nn.Module):
         # Training with deep supervision
         total_loss = 0.0
 
-        for step in range(n_supervision_steps):
+        for step in range(int(n_supervision_steps)):
             y, z, logits, halt_logit = self.deep_recursion(x, y, z, use_grad=True)
 
             # Cross-entropy loss for token prediction
