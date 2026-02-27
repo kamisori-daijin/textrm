@@ -21,7 +21,7 @@ def train(
     val_loader,
     tokenizer,
     device,
-    epochs=5,
+    epochs=10,
     lr=1e-4,
     warmup_steps=1000,
     n_supervision_steps=4,
@@ -82,7 +82,7 @@ def train(
         print(f'Epoch {epoch+1} - Val Loss: {val_loss:.4f}')
 
         # Generate sample
-        prompt = "Once upon a time"
+        prompt = "Write a polite refusal email"
         prompt_ids = torch.tensor([tokenizer.encode(prompt)], device=device)
         generated = model.generate(prompt_ids, max_new_tokens=100)
         generated_text = tokenizer.decode(generated[0].tolist())

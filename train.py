@@ -4,7 +4,7 @@ from datasets import load_dataset
 from models.trm_build import RMSNorm, TransformerBlock, apply_rotary_pos_emb, RotaryEmbedding
 from models.trm_model import TinyRecursiveModel
 from models.config import config
-from wikipedia_dataset.wikipedia_dataset import WikipediaDataset 
+from dataset.dataset import Dataset 
 from training.instantiate import tokenizer, device, model
 from training.trainer import train
 from ema.ema import EMA
@@ -12,19 +12,24 @@ from ema.ema import EMA
 
 
 if __name__ == '__main__':
-    train_dataset = WikipediaDataset(
-        tokenizer,
-        split='train',
+    train_dataset = Dataset(
+        dataset_path="alpaca_dolly_combined",
+        tokenizer=tokenizer,
         max_length=config['max_seq_len'] + 1,  # +1 for next token prediction
         max_samples=config['max_train_samples']
     )
-    val_dataset = WikipediaDataset(
-        tokenizer,
-        split='train',
+    val_dataset = Dataset(
+        dataset_path="alpaca_dolly_combined",
+        tokenizer=tokenizer,
         max_length=config['max_seq_len'] + 1,
         max_samples=config['max_val_samples'],
         val_split=True,
         val_split_ratio=0.9
+    )
+    dataset = Dataset(
+        dataset_path="alpaca_dolly_combined",
+        tokenizer=tokenizer,
+        max_length=config['max_seq_len'] + 1
     )
 
     train_loader = DataLoader(
@@ -69,10 +74,7 @@ if __name__ == '__main__':
     ema = EMA(model)
 
     prompts = [
-        "Once upon a time",
-        "The little girl",
-        "One day, a rabbit",
-        "Tom and his friend"
+        "Write a polite refusal email", 
     ]
 
     print('\n=== Generated Stories ===\n')

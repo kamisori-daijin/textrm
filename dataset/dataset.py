@@ -1,32 +1,20 @@
+from datasets import load_from_disk
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
-from torch.utils.data import Dataset, DataLoader
-from datasets import load_dataset
-from transformers import GPT2Tokenizer
-import math
-import os
-from tqdm import tqdm
-import copy
-from models import trm_build
-from models.trm_build import RMSNorm, TransformerBlock, apply_rotary_pos_emb, RotaryEmbedding
+from torch.utils.data import Dataset
 
-class WikipediaDataset(Dataset):
+class Dataset(Dataset):
     def __init__(
         self,
+        dataset_path,
         tokenizer,
         max_length=128,
         max_samples=100000,
-        split="train",
         val_split=False,
         val_split_ratio=0.9
     ):
-        print("Loading enron-email dataset...")
-        dataset = load_dataset(
-            "LLM-PBE/enron-email",
-            split=split,
-            streaming=True
-        )
+        print("Loading local dataset...")
+
+        dataset = load_from_disk(dataset_path)
 
         self.tokenizer = tokenizer
         self.max_length = max_length
@@ -37,19 +25,10 @@ class WikipediaDataset(Dataset):
         for i, item in enumerate(dataset):
             text = item["text"]
 
-        
-            if len(text) < 200:
-                continue
-
             tokens = tokenizer.encode(text)
-            
-            # Skip texts that are too long
-            if len(tokens) > max_length * 2:
-                continue
 
             buffer.extend(tokens)
 
-        
             while len(buffer) >= max_length:
                 chunk = buffer[:max_length]
                 buffer = buffer[max_length:]
@@ -58,7 +37,6 @@ class WikipediaDataset(Dataset):
             if len(self.examples) >= max_samples:
                 break
 
-        # Split into train/validation if requested
         if val_split:
             split_idx = int(len(self.examples) * val_split_ratio)
             self.examples = self.examples[split_idx:]
@@ -70,8 +48,6 @@ class WikipediaDataset(Dataset):
 
     def __getitem__(self, idx):
         tokens = self.examples[idx]
-
         input_ids = tokens[:-1].clone()
         targets = tokens[1:].clone()
-
-        return input_ids, targets  
+        return input_ids, targets
