@@ -10,14 +10,14 @@ class Dataset(Dataset):
         self,
         tokenizer,
         max_length=128,
-        max_samples=100000,
+        max_samples=20000,
         split="train",
         val_split=False,
         val_split_ratio=0.9
     ):
-        print("Loading alpaca dataset...")
+        print("Loading email dataset...")
         dataset = load_dataset(
-            "vicgalle/alpaca-gpt4",
+            "Kamisori-daijin/email-datasets-20k",
             split=split,
             streaming=True
         )
@@ -29,7 +29,15 @@ class Dataset(Dataset):
         buffer = []
 
         for i, item in enumerate(dataset):
-            text = item["text"]
+            
+            instruction = item.get("instruction", "")
+            output_data = item.get("output", {})
+            
+            if isinstance(output_data, dict):
+                output_text = f"{output_data.get('subject', '')}\n{output_data.get('body', '')}"
+            else:
+                output_text = str(output_data)
+            text = f"{instruction}\n{output_text}"
 
         
             if len(text) < 200:
@@ -44,9 +52,9 @@ class Dataset(Dataset):
             buffer.extend(tokens)
 
         
-            while len(buffer) >= max_length:
-                chunk = buffer[:max_length]
-                buffer = buffer[max_length:]
+            while len(buffer) >= (max_length + 1): 
+                chunk = buffer[:max_length + 1]    
+                buffer = buffer[max_length:]       
                 self.examples.append(torch.tensor(chunk))
 
             if len(self.examples) >= max_samples:
