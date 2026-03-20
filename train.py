@@ -70,11 +70,11 @@ if __name__ == '__main__':
         "Write a polite refusal email", 
     ]
 
-    print('\n=== Generated Stories ===\n')
+    print('\n=== Generated Emails ===\n')
     for prompt in prompts:
         prompt_ids = torch.tensor([tokenizer.encode(prompt)], device=device)
         generated = model.generate(prompt_ids, max_new_tokens=150, temperature=0.8)
         text = tokenizer.decode(generated[0].tolist())
         print(f'Prompt: "{prompt}"')
-        print(f'Story: {text}\n')
+        print(f'Email: {text}\n')
         print('-' * 50 + '\n')
