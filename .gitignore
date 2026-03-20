@@ -13,4 +13,6 @@ alpaca_dolly_combined/
 
 .DS_Store
 *.pt
+*.safetensors
 login.py
+
