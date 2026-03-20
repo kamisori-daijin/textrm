@@ -18,7 +18,7 @@ Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungS
 2. Adjust model config in `models/config.py`
 
    ```python
-   config = {
+  config = {
       'vocab_size': 50257,  # GPT-2 vocab
       'dim': 256,           # Hidden dimension
       'n_heads': 8,         # Attention heads
@@ -29,26 +29,32 @@ Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungS
       'n_improvement_cycles': 2,  # T in paper (reduced for memory)
 
       # Training
-      'batch_size': 64,     # 16 Reduced batch size
-      'epochs': 5,
+      'batch_size': 64,     # Reduced for MPS memory constraints
+      'epochs': 15,
       'lr': 1e-4,
       'warmup_steps': 500,
       'n_supervision_steps': 3,  # Deep supervision steps during training
-      'max_train_samples': 100000,  # Limit for faster training demo
-      'max_val_samples': 20000,
-   }
+      'max_train_samples': 20000,  # Reduced for memory and speed
+      'max_val_samples': 1000,
+    }
    ```
-3. Train on Wikipedia Datasets:
+3. Train on Email Datasets:
    ```bash
    python train.py 
   
    ```
+4. Convert weight to Safetensors
+  ```bash
+  python convert_to_saferensors.py
+  ```
+5. Run Inference
+ ```bash
+ python inference.py
+ ```
 
 ## Thanks
 
 [gmarchetti2020/TRM-Experiments](https://github.com/gmarchetti2020/TRM-Experiments)-Defining and training the model
-
-[wikimedia/wikipedia](https://huggingface.co/datasets/wikimedia/wikipedia)-Dataset for training
 
 [stockeh/mlx-trm](https://github.com/stockeh/mlx-trm)-Tool structure
 
