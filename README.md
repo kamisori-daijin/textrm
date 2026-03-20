@@ -18,7 +18,7 @@ Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungS
 2. Adjust model config in `models/config.py`
 
    ```python
-  config = {
+    config = {
       'vocab_size': 50257,  # GPT-2 vocab
       'dim': 256,           # Hidden dimension
       'n_heads': 8,         # Attention heads
