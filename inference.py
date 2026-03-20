@@ -29,7 +29,7 @@ model.to(device)
 model.eval()
 
 
-def generate_email(prompt, max_new_tokens=150, temperature=0.8):
+def generate_email(prompt, max_new_tokens=200, temperature=0.8):
     prompt_ids = torch.tensor([tokenizer.encode(prompt)], device=device)
     generated = model.generate(prompt_ids, max_new_tokens=max_new_tokens, temperature=temperature)
     return tokenizer.decode(generated[0].tolist())
@@ -37,7 +37,40 @@ def generate_email(prompt, max_new_tokens=150, temperature=0.8):
 
 if __name__ == "__main__":
     prompts = [
+        #level 1
         "Write a polite refusal email",
+        "Write a professional business email.",
+        "Write a short formal email.",
+        #level 2
+        "Write a polite refusal email to a client.",
+        "Write a polite refusal email to a partner.",
+        "Write a polite refusal email to a vendor.",
+        #level 3
+        "Write a polite refusal email to a client regarding a budget request.",
+        "Write a polite refusal email to a partner regarding a meeting request.",
+        "Write a polite refusal email to a vendor regarding a contract proposal.",
+        #level 4
+        "Write a polite and formal refusal email.",
+        "Write a polite but firm refusal email.",
+        "Write a slightly apologetic refusal email.",
+        #level 5
+        "Write a polite refusal email under 100 words.",
+        "Write a concise refusal email.",
+        #level 6
+        "Write a polite refusal email from a Product Manager.",
+        "Write a polite refusal email from a CEO.",
+        "Write a polite refusal email from a Customer Success Manager.",
+        #level 7
+        "Write a polite refusal email from a Customer Success Manager to a client regarding a pricing request.",
+        "Write a polite refusal email from a CEO to a partner regarding a proposal.",
+        "Write a polite refusal email from a Product Manager to a vendor regarding a feature request.",
+        #level 8
+        "Write a passive-aggressive refusal email.",
+        "Write a very enthusiastic refusal email.",
+        "Write a refusal email that sounds overly positive.",
+        #level 9
+        "Refuse a request politely in an email.",
+        "Politely decline a business request via email."
     ]
 
     print("\n=== Generated Emails ===\n")
