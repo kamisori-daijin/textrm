@@ -41,16 +41,15 @@ Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungS
 3. Train on Email Datasets:
    ```bash
    python train.py 
-  
    ```
 4. Convert weight to Safetensors
-  ```bash
-  python convert_to_saferensors.py
-  ```
+   ```bash
+   python convert_to_saferensors.py
+   ```
 5. Run Inference
- ```bash
- python inference.py
- ```
+   ```bash
+   python inference.py
+   ```
 
 ## Thanks
 
