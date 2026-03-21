@@ -29,7 +29,7 @@ model.to(device)
 model.eval()
 
 
-def generate_email(prompt, max_new_tokens=200, temperature=0.8):
+def generate_email(prompt, max_new_tokens=200, temperature=0.7):
     prompt_ids = torch.tensor([tokenizer.encode(prompt)], device=device)
     generated = model.generate(prompt_ids, max_new_tokens=max_new_tokens, temperature=temperature)
     return tokenizer.decode(generated[0].tolist())

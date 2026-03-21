@@ -20,8 +20,18 @@ device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
 print(f'Using device: {device}')
 
 # Tokenizer
-tokenizer = GPT2Tokenizer.from_pretrained('gpt2')
+model_id = "TinyLlama/TinyLlama_v1.1"
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+special_tokens_dict = {
+    'additional_special_tokens': ['<user>', '<think>', '</think>', '<generate>', '</generate>']
+}
+tokenizer.add_special_tokens(special_tokens_dict)
+
 tokenizer.pad_token = tokenizer.eos_token
+
+print(f"Vocab size (Original): {tokenizer.vocab_size}")
+print(f"Vocab size (Added): {len(tokenizer)}")
 
 # Model
 model = TinyRecursiveModel(

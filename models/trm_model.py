@@ -52,7 +52,7 @@ class TinyRecursiveModel(nn.Module):
         vocab_size,
         dim=256,
         n_heads=8,
-        n_layers=2,
+        n_layers=3,
         mlp_ratio=4,
         max_seq_len=256,
         n_latent_recursions=6,  # n in the paper

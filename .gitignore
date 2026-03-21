@@ -16,3 +16,5 @@ alpaca_dolly_combined/
 *.safetensors
 login.py
 
+chekpoint1.0/
+

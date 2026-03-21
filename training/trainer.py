@@ -19,7 +19,7 @@ def train(
     val_loader,
     tokenizer,
     device,
-    epochs=10,
+    epochs=20,
     lr=1e-4,
     warmup_steps=1000,
     n_supervision_steps=4,

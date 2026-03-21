@@ -1,8 +1,8 @@
 config = {
-    'vocab_size': 50257,  # GPT-2 vocab
+    'vocab_size': 32005,  # TinyLlama(32k) + 5 Special Tokens
     'dim': 256,           # Hidden dimension
     'n_heads': 8,         # Attention heads
-    'n_layers': 2,        # Only 2 layers (key insight from paper)
+    'n_layers':  3,        # Only 3 layers (key insight from paper)
     'mlp_ratio': 4,
     'max_seq_len': 128,   # Reduced for stability
     'n_latent_recursions': 4,  # n in paper (reduced for memory)
@@ -10,7 +10,7 @@ config = {
 
     # Training
     'batch_size': 64,     # Reduced for MPS memory constraints
-    'epochs': 15,
+    'epochs': 20,
     'lr': 1e-4,
     'warmup_steps': 500,
     'n_supervision_steps': 3,  # Deep supervision steps during training
