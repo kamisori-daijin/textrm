@@ -1,23 +1,23 @@
 import torch
-from torch.utils.data import Dataset
+import torch.nn as nn
+import torch.nn.functional as F
+from torch.utils.data import Dataset, DataLoader
 from datasets import load_dataset
+from models.trm_build import RMSNorm, TransformerBlock, apply_rotary_pos_emb, RotaryEmbedding
 
 class Dataset(Dataset):
     def __init__(
         self,
         tokenizer,
-        dataset_name="Kamisori-daijin/email-datasets-20k",
         max_length=128,
         max_samples=20000,
         split="train",
         val_split=False,
         val_split_ratio=0.9
     ):
-        print(f"Loading CoT dataset from {dataset_name}...")
-        
-        # load streaming
+        print("Loading email dataset...")
         dataset = load_dataset(
-            dataset_name,
+            "Kamisori-daijin/email-datasets-20k",
             split=split,
             streaming=True
         )
@@ -28,38 +28,44 @@ class Dataset(Dataset):
 
         buffer = []
 
-        for item in dataset:
+        for i, item in enumerate(dataset):
             
+            instruction = item.get("instruction", "")
+            output_data = item.get("output", {})
             
-            text = item.get("text", "")
-            
-            if not text:
+            if isinstance(output_data, dict):
+                output_text = f"{output_data.get('subject', '')}\n{output_data.get('body', '')}"
+            else:
+                output_text = str(output_data)
+            text = f"{instruction}\n{output_text}"
+
+        
+            if len(text) < 200:
                 continue
 
-            # 2. tokenize
-           
             tokens = tokenizer.encode(text)
             
-           
+            # Skip texts that are too long
+            if len(tokens) > max_length * 2:
+                continue
+
             buffer.extend(tokens)
 
-            # 4. Packing process (128 destinations + 1 item for next forecast)
-            # Slide using buffer[max_length:] to extract without duplicates.
-            while len(buffer) >= (max_length + 1):
-                chunk = buffer[:max_length + 1]
+        
+            while len(buffer) >= (max_length + 1): 
+                chunk = buffer[:max_length + 1]    
+                buffer = buffer[max_length:]       
                 self.examples.append(torch.tensor(chunk))
-                buffer = buffer[max_length:] # Place 1 token on top and move on to the next step.
 
-            # The program will end once the specified number of samples has been reached.
             if len(self.examples) >= max_samples:
                 break
 
-        # valdation split
+        # Split into train/validation if requested
         if val_split:
             split_idx = int(len(self.examples) * val_split_ratio)
             self.examples = self.examples[split_idx:]
 
-        print(f"Built {len(self.examples)} samples (Sequence Length: {max_length}).")
+        print(f"Built {len(self.examples)} samples.")
 
     def __len__(self):
         return len(self.examples)
@@ -67,8 +73,7 @@ class Dataset(Dataset):
     def __getitem__(self, idx):
         tokens = self.examples[idx]
 
-        # Shift input_ids by one position, like this: [0, 1, 2] -> target: [1, 2, 3]
         input_ids = tokens[:-1].clone()
         targets = tokens[1:].clone()
 
-        return input_ids, targets
+        return input_ids, targets  

@@ -2,6 +2,8 @@
 
 Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungSAILMontreal/TinyRecursiveModels)
 
+huggingface: https://huggingface.co/Kamisori-daijin/textrm-28M-bizmail
+
 ## Usage
 
 1. Setup the environment
@@ -20,8 +22,8 @@ Simplified reimplementation of [TinyRecursiveModels](https://github.com/SamsungS
    ```python
     config = {
       'vocab_size': 32005,  # TinyLlama(32k) + 5 Special Tokens
-      'dim': 256,           # Hidden dimension
-      'n_heads': 8,         # Attention heads
+      'dim': 384,           # Hidden dimension
+      'n_heads': 12,         # Attention heads
       'n_layers': 3,        # Only 3 layers (key insight from paper)
       'mlp_ratio': 4,
       'max_seq_len': 128,   # Reduced for stability
