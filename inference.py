@@ -1,5 +1,5 @@
 import torch
-from transformers import GPT2Tokenizer
+from transformers import AutoTokenizer
 from models.trm_model import TinyRecursiveModel
 from safetensors.torch import load_file
 from models.config import config
@@ -7,7 +7,7 @@ from models.config import config
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 
 # Tokenizer
-tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
+tokenizer = AutoTokenizer.from_pretrained("./checkpoints2.0/textrm-2.0-tokenizer")
 tokenizer.pad_token = tokenizer.eos_token
 
 # Model
@@ -29,10 +29,10 @@ model.to(device)
 model.eval()
 
 
-def generate_email(prompt, max_new_tokens=200, temperature=0.7):
+def generate_email(prompt, max_new_tokens=300, temperature=0.7):
     prompt_ids = torch.tensor([tokenizer.encode(prompt)], device=device)
     generated = model.generate(prompt_ids, max_new_tokens=max_new_tokens, temperature=temperature)
-    return tokenizer.decode(generated[0].tolist())
+    return tokenizer.decode(generated[0].tolist(), skip_special_tokens=True)
 
 
 if __name__ == "__main__":

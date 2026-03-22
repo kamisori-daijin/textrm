@@ -30,6 +30,13 @@ tokenizer.add_special_tokens(special_tokens_dict)
 
 tokenizer.pad_token = tokenizer.eos_token
 
+
+
+save_dir = "./checkpoints2.0/textrm-2.0-tokenizer"
+os.makedirs(save_dir, exist_ok=True)
+# Save tokenizer
+tokenizer.save_pretrained(save_dir)
+
 print(f"Vocab size (Original): {tokenizer.vocab_size}")
 print(f"Vocab size (Added): {len(tokenizer)}")
 
