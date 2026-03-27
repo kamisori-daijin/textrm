@@ -7,7 +7,7 @@ from models.config import config
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 
 # Tokenizer
-tokenizer = AutoTokenizer.from_pretrained("./checkpoints2.0/textrm-2.0-tokenizer")
+tokenizer = AutoTokenizer.from_pretrained("./textrm-2.0-tokenizer")
 tokenizer.pad_token = tokenizer.eos_token
 
 # Model

@@ -32,7 +32,7 @@ tokenizer.pad_token = tokenizer.eos_token
 
 
 
-save_dir = "./checkpoints2.0/textrm-2.0-tokenizer"
+save_dir = "./textrm-2.0-tokenizer"
 os.makedirs(save_dir, exist_ok=True)
 # Save tokenizer
 tokenizer.save_pretrained(save_dir)
