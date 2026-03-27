@@ -1,3 +1,4 @@
+
 import os
 
 import torch
@@ -23,6 +24,7 @@ def train(
     lr=1e-4,
     warmup_steps=1000,
     n_supervision_steps=4,
+    gradient_accumulation_steps=1,
     ema_decay=0.999,
     save_path="textrm-model.pt",
 ):
@@ -48,26 +50,31 @@ def train(
     for epoch in range(epochs):
         model.train()
         pbar = tqdm(train_loader, desc=f"Epoch {epoch + 1}/{epochs}")
+        optimizer.zero_grad()
 
-        for input_ids, targets in pbar:
+        for i, (input_ids, targets) in enumerate(pbar):
             input_ids = input_ids.to(device)
             targets = targets.to(device)
 
-            optimizer.zero_grad()
             loss = model(input_ids, targets, n_supervision_steps=n_supervision_steps)
+            # Scale loss for accumulation
+            loss = loss / gradient_accumulation_steps
             loss.backward()
 
-            # Gradient clipping
-            torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+            if (i + 1) % gradient_accumulation_steps == 0 or (i + 1) == len(train_loader):
+                # Gradient clipping
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
 
-            optimizer.step()
-            scheduler.step()
-            ema.update()
+                optimizer.step()
+                scheduler.step()
+                ema.update()
+                optimizer.zero_grad()
 
-            global_step += 1
+                global_step += 1
+
             pbar.set_postfix(
                 {
-                    "loss": f"{loss.item():.4f}",
+                    "loss": f"{loss.item() * gradient_accumulation_steps:.4f}",
                     "lr": f"{scheduler.get_last_lr()[0]:.6f}",
                 }
             )

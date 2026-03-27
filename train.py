@@ -51,6 +51,7 @@ if __name__ == '__main__':
         lr=config['lr'],
         warmup_steps=config['warmup_steps'],
         n_supervision_steps=config['n_supervision_steps'],
+        gradient_accumulation_steps=config['gradient_accumulation_steps'],
         save_path=save_path,
     )
     
