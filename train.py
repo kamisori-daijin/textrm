@@ -4,7 +4,7 @@ from datasets import load_dataset
 from models.trm_build import RMSNorm, TransformerBlock, apply_rotary_pos_emb, RotaryEmbedding
 from models.trm_model import TinyRecursiveModel
 from models.config import config
-from dataset.dataset import Dataset 
+from dataset.dataset import get_packed_dataset
 from training.instantiate import tokenizer, device, model
 from training.trainer import train
 from ema.ema import EMA
@@ -12,17 +12,12 @@ from ema.ema import EMA
 
 
 if __name__ == '__main__':
-    train_dataset = Dataset(
-        tokenizer,
-        max_length=config['max_seq_len'] + 1,  # +1 for next token prediction
-        max_samples=config['max_train_samples']
-    )
-    val_dataset = Dataset(
+    # Load and pack dataset once, then split
+    train_dataset, val_dataset = get_packed_dataset(
         tokenizer,
         max_length=config['max_seq_len'] + 1,
-        max_samples=config['max_val_samples'],
-        val_split=True,
-        val_split_ratio=0.9
+        max_samples=config['max_train_samples'] + config['max_val_samples'],
+        val_ratio=config['max_val_samples'] / (config['max_train_samples'] + config['max_val_samples'])
     )
 
     train_loader = DataLoader(
