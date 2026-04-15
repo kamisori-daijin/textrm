@@ -19,7 +19,7 @@ def get_packed_dataset(
     tokenizer,
     dataset_name="Kamisori-daijin/email-datasets-v2-100k",
     max_length=256,
-    max_samples=20000,
+    max_samples= 100000,
     split="train",
     val_ratio=0.1
 ):
