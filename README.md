@@ -2,14 +2,18 @@
 
 A simplified and efficient reimplementation of [TinyRecursiveModels](https://github.com/SamsungSAILMontreal/TinyRecursiveModels), optimized for memory-constrained environments and modern training techniques.
 
-Hugging Face: [Kamisori-daijin/textrm-28M-bizmail](https://huggingface.co/Kamisori-daijin/textrm-28M-bizmail)
+Hugging Face:
+- [Kamisori-daijin/textrm-28M-bizmail](https://huggingface.co/Kamisori-daijin/textrm-28M-bizmail)
+- [Kamisori-daijin/textrm1.5-25M-bizmail](https://huggingface.co/Kamisori-daijin/textrm1.5-25M-bizmail)
+
+
 
 ## Key Features
 
 - **Recursive Latent Reasoning**: Implements the core TRM architecture where a single "tiny" network is reused across latent recursions (`n`) and improvement cycles (`T`).
 - **Deep Supervision**: Trains with intermediate losses across multiple refinement steps to ensure stable convergence.
 - **Efficient Packing Strategy**: 
-    - Multiple training examples are packed into fixed-length blocks (e.g., 256 tokens) with `<eos>` separators.
+    - Multiple training examples are packed into fixed-length blocks (e.g., 256 tokens) with `</s>` separators.
     - Zero padding: maximizes GPU throughput by ensuring every token in the batch is used for learning.
 - **Smart Loss Masking**: 
     - The dataset automatically identifies the `<user>` prompt and masks it during training using `-100`.
