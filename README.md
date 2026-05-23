@@ -6,6 +6,8 @@ Hugging Face:
 - [Kamisori-daijin/textrm-28M-bizmail](https://huggingface.co/Kamisori-daijin/textrm-28M-bizmail)
 - [Kamisori-daijin/textrm1.5-25M-bizmail](https://huggingface.co/Kamisori-daijin/textrm1.5-25M-bizmail)
 
+MoE Version :
+- [textrm-MoE](https://github.com/kamisori-daijin/textrm-MoE)
 
 
 ## Key Features
